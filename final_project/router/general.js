@@ -27,14 +27,11 @@ public_users.get('/isbn/:isbn', function (req, res) {
 public_users.get('/author/:author',function (req, res) {
   const author = req.params.author;
   const authorBooks = [];
-  const entries = Object.entries(books);
-  
-  for (const [isbn, details] of entries) {
-    if (details.author === author) {
-      authorBooks.push({ isbn, ...details });
+  for (const isbn in books) {
+    if (books[isbn].author === author) {
+      authorBooks.push({ isbn, ...books[isbn] });
     }
   }
-
   if (authorBooks.length > 0) {
     res.send(JSON.stringify(authorBooks, null, 4));
   } else {
@@ -44,7 +41,18 @@ public_users.get('/author/:author',function (req, res) {
 
 // Task 4: Get all books based on title
 public_users.get('/title/:title',function (req, res) {
-  return res.status(300).json({message: "Yet to be implemented"});
+  const title = req.params.title;
+  const titleBooks = [];
+  for (const isbn in books) {
+    if (books[isbn].title === title) {
+      titleBooks.push({ isbn, ...books[isbn] });
+    }
+  }
+  if (titleBooks.length > 0) {
+    res.send(JSON.stringify(titleBooks, null, 4));
+  } else {
+    res.status(404).json({message: "No books found with this title"});
+  }
 });
 
 // Task 5: Get book review
